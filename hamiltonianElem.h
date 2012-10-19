@@ -19,8 +19,6 @@ class hamiltonianElem
 			i_shells 	= i_shellsARG;
 			i_numpart 	= i_numpartARG;
 		
-			std::cout << i_numstates << std::endl;
-
 			//init arrays with m and n
 			pi_n = new int[i_numstates];
 			pi_m = new int[i_numstates];
@@ -49,7 +47,7 @@ class hamiltonianElem
 		/*
 		   * initiate the coulomb interaction elements
 		   */
-		double**** initCoulombElem();
+//		double**** initCoulombElem();
 		/*
 		   * return pointer to array with the single particle energies
 		   */
@@ -73,114 +71,4 @@ class hamiltonianElem
 			else
 				return 0.0;
 		}
-		/*
-		   * identify all basis states with spin = 0 and anngular momentum = 0
-		   * return : pointer to an (i_numstates x i_dimh) array
-		   * i_dimh is calculated in the first while loop
-		   */
-		int **basisStates(int &i_dimh)
-		{
-			int i, j, is, im, k, i_temp, i_nallowed;
-			int **ppi_bs;
-			int pi_t[i_numpart];
-
-			i_nallowed = 0;
-
-			for (i=0; i<i_numpart; i++)
-				pi_t[i] = i;
-
-			while (pi_t[0]<=i_numstates-i_numpart)
-			{
-				
-				is = im = 0;
-				for (k=0; k<i_numpart; k++)
-				{
-					im += pi_m[pi_t[k]/2];
-					is += pi_t[k]%2;
-				}
-				if ( (is==1) && (im==0) )
-				{
-					i_nallowed++;
-				}
-
-				pi_t[i_numpart-1]++;
-				if (pi_t[i_numpart-1]==i_numstates)
-				{
-					j = i_numpart-1;
-					k = 0;
-					while ( (j>0) && (pi_t[j]==i_numstates-k) )
-					{
-						k++;
-						pi_t[j-1]++;
-						pi_t[j]=pi_t[j-1];
-						j--;
-					}
-					j+=1;
-					while (j<i_numpart)
-					{
-						pi_t[j]=pi_t[j-1]+1;
-						j++;
-					}
-				}
-			}
-
-			ppi_bs = new int*[i_nallowed];
-			for (i=0; i<i_nallowed; i++)
-				ppi_bs[i] = new int[i_numpart];
-			
-			for (i=0; i<i_numpart; i++)
-				pi_t[i] = i;
-			i_nallowed = 0;
-			while (pi_t[0]<=i_numstates-i_numpart)
-			{
-				
-				is = im = 0;
-				for (k=0; k<i_numpart; k++)
-				{
-					im += pi_m[pi_t[k]/2];
-					is += pi_t[k]%2;
-				}
-				if ( (is==1) && (im==0) )
-				{
-					for (k=0; k<i_numpart; k++)
-						ppi_bs[i_nallowed][k] = pi_t[k];
-					i_nallowed++;
-				}
-
-				pi_t[i_numpart-1]++;
-				if (pi_t[i_numpart-1]==i_numstates)
-				{
-					j = i_numpart-1;
-					k = 0;
-					while ( (j>0) && (pi_t[j]==i_numstates-k) )
-					{
-						k++;
-						pi_t[j-1]++;
-						pi_t[j]=pi_t[j-1];
-						j--;
-					}
-					j+=1;
-					while (j<i_numpart)
-					{
-						pi_t[j]=pi_t[j-1]+1;
-						j++;
-					}
-				}
-			}
-			i_dimh = i_nallowed;
-	/*	
-			//PRINT	
-			std::cout << "number of basis states: " << i_nallowed << std::endl;
-			std::cout << "basis states: " << std::endl;
-			for (i=0; i<i_nallowed; i++)
-			{
-				std::cout << "|";
-				for (k=0; k<i_numpart; k++)
-					std::cout << ppi_bs[i][k] << ",";
-				std::cout << ">" << std::endl;
-			}
-*/
-			
-			return ppi_bs;
-		};
 };
